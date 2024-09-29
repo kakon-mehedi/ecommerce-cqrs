@@ -1,4 +1,5 @@
 using System;
+using DarazClone.Core.Shared.Enums.Products;
 using MongoDB.Bson;
 
 namespace DarazClone.Core.Entities.Product;
@@ -9,7 +10,7 @@ public class Product : EntityBase
     public string Name { get; set; } = string.Empty;
     public decimal Price { get; set; } = decimal.Zero;
     public string Category { get; set; } = string.Empty;
-    public string Type { get; set; } = string.Empty;
+    public ProductTypeEnums Type { get; set; }
 }
 
 public class ElectronicsProduct : Product
