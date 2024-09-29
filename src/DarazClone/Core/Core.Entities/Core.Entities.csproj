@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Shared\Core.Shared.csproj" />
+  </ItemGroup>
+
+  
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.29.0" />
+  </ItemGroup>
+
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>DarazClone.Core.Entities</RootNamespace>
+  </PropertyGroup>
+
+</Project>
