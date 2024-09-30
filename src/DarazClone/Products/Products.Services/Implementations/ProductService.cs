@@ -27,24 +27,30 @@ public class ProductService : IProductService
     {
         var response = new ApiResponseModel();
         dynamic product = null;
-        
 
-        if (command.Type == ProductTypeEnums.Books) {
+
+        if (command.Type == ProductTypeEnums.Books)
+        {
             product = command.MapToBookProductEntity();
             _commonValueInjectorService.Inject<BookProduct>(product);
+            _metadataInjectorService.Inject<BookProduct>(product);
         }
 
-        if (command.Type == ProductTypeEnums.Clothing){
+        if (command.Type == ProductTypeEnums.Clothing)
+        {
             product = command.MapToClothingProductEntity();
-             _commonValueInjectorService.Inject<ClothingProduct>(product);
+            _commonValueInjectorService.Inject<ClothingProduct>(product);
+            _metadataInjectorService.Inject<BookProduct>(product);
         }
 
-        if (command.Type == ProductTypeEnums.Electronics) {
+        if (command.Type == ProductTypeEnums.Electronics)
+        {
             product = command.MapToElectronicsProductEntity();
-             _commonValueInjectorService.Inject<ElectronicsProduct>(product);
+            _commonValueInjectorService.Inject<ElectronicsProduct>(product);
+            _metadataInjectorService.Inject<BookProduct>(product);
         }
 
-       try
+        try
         {
             await _repositoryService.InsertAsync<Product>(product);
         }
@@ -56,7 +62,7 @@ public class ProductService : IProductService
 
         return response.SetSuccess(product);
 
-        
+
 
     }
 
