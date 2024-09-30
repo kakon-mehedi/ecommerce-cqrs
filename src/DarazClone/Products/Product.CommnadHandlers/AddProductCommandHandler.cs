@@ -21,9 +21,16 @@ public class AddProductCommandHandler : ICommandHandler<AddProductCommand, ApiRe
     {
         var validator = new AddProductCommandValidator();
 
-        var res = await validator.ValidateAsync(command);
+        var response = await validator.ValidateAsync(command);
 
-        return res;
-        
+        if (response.IsSuccess)
+        {
+            response = await _productService.AddProduct(command);
+        }
+
+        response.SetStatusCode(response.IsSuccess ? 200 : 400);
+
+        return response;
+
     }
 }

@@ -4,6 +4,7 @@ public enum ProductTypeEnums
 {
     Electronics,
     Clothing,
-    Books
+    Books,
+    Default
 
 }

@@ -1,12 +1,13 @@
 using System;
 using DarazClone.Core.Entities.Product;
+using DarazClone.Products.Commands;
 using MongoDB.Bson;
 
 namespace DarazClone.Products.Services.Mappings;
 
 public static class ProductEntityMapper
 {
-    public static ElectronicsProduct MapToElectronicsProductEntity(this ElectronicsProduct source) {
+    public static ElectronicsProduct MapToElectronicsProductEntity(this AddProductCommand source) {
         var destination = new ElectronicsProduct();
         
         destination.Id = ObjectId.GenerateNewId();
@@ -22,7 +23,7 @@ public static class ProductEntityMapper
         return destination;
     }
 
-    public static ClothingProduct MapToClothingProductEntity(this ClothingProduct source) {
+    public static ClothingProduct MapToClothingProductEntity(this AddProductCommand source) {
         var destination = new ClothingProduct();
         
         destination.Id = ObjectId.GenerateNewId();
@@ -38,7 +39,7 @@ public static class ProductEntityMapper
         return destination;
     }
 
-    public static BookProduct MapToBookProductEntity(this BookProduct source) {
+    public static BookProduct MapToBookProductEntity(this AddProductCommand source) {
         var destination = new BookProduct();
         
         destination.Id = ObjectId.GenerateNewId();
