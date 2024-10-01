@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <Folder Include="Controllers/Cart/" />
-    <Folder Include="Controllers/Reports/" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +26,7 @@
     <ProjectReference Include="..\Products\Product.Commands\Products.Commands.csproj" />
     <ProjectReference Include="..\Products\Products.Queries\Products.Queries.csproj" />
     <ProjectReference Include="..\Products\Products.QueryHandlers\Products.QueryHandlers.csproj" />
+    <ProjectReference Include="..\Reports\Reports.Services\Reports.Services.csproj" />
   </ItemGroup>
 
 </Project>

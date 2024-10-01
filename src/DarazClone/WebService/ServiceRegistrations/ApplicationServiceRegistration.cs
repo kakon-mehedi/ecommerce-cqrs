@@ -1,5 +1,6 @@
 using DarazClone.Core.Services;
 using DarazClone.Products.Services;
+using Reports.Services;
 
 
 
@@ -19,6 +20,7 @@ public static class ApplicationServiceRegistration
     public static IServiceCollection AddApplicationServices(this IServiceCollection services) {
         
         services.AddProductServices();
+        services.AddReportServices();
         return services;
     }
 }
