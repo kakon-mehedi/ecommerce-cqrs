@@ -20,6 +20,11 @@ public class MongoRepository : IRepository
         throw new NotImplementedException();
     }
 
+    public Task<IAsyncCursor<TProjection>> FindAsync<TProjection, TEntity>(FilterDefinition<TEntity> filter, FindOptions<TEntity, TProjection> options = null)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task<IEnumerable<TResponse>> GetAllAsync<TEntity, TResponse>()
     {
         throw new NotImplementedException();
@@ -50,15 +55,28 @@ public class MongoRepository : IRepository
         throw new NotImplementedException();
     }
 
-    public async Task InsertAsync<TEntity>(TEntity entity)
+    public async Task InsertManyAsync<TEntity>(List<TEntity> entities)
+    {
+        var collection = GetCollection<TEntity>();
+        await collection.InsertManyAsync(entities);
+    }
+
+    public async Task InsertOneAsync<TEntity>(TEntity entity)
     {
         var collection = GetCollection<TEntity>();
         await collection.InsertOneAsync(entity);
     }
 
-    public Task UpdateAsync<TEntity, TResponse>(string id, TEntity entity)
+    public async Task UpdateManyAsync<TEntity>(FilterDefinition<TEntity> filter, UpdateDefinition<TEntity> updatedDataList, UpdateOptions options)
     {
-        throw new NotImplementedException();
+         var collection = GetCollection<TEntity>();
+         await collection.UpdateManyAsync(filter, updatedDataList, options);
+    }
+
+    public async Task UpdateOneAsync<TEntity>(FilterDefinition<TEntity> filter, UpdateDefinition<TEntity> updatedData, UpdateOptions options)
+    {
+        var collection = GetCollection<TEntity>();
+        await collection.UpdateManyAsync(filter, updatedData, options);
     }
 
     private IMongoCollection<TEntity> GetCollection<TEntity>()

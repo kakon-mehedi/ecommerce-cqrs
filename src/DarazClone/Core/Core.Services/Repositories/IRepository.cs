@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity.Data;
+using MongoDB.Driver;
 
 namespace DarazClone.Core.Services.Repositories;
 
@@ -14,18 +15,24 @@ public interface IRepository
 
     Task<IEnumerable<TResponse>> GetAllAsync<TEntity, TResponse>(Expression<Func<TEntity, bool>> predicate);
 
+    Task<IAsyncCursor<TProjection>> FindAsync<TProjection, TEntity>(FilterDefinition<TEntity> filter, FindOptions<TEntity, TProjection> options = null);
+
+
     #endregion
 
     #region Insert
     
-    Task InsertAsync<TEntity>(TEntity entity);
+    Task InsertOneAsync<TEntity>(TEntity entity);
+    Task InsertManyAsync<TEntity>(List<TEntity> entities);
     
     #endregion
 
 
     #region Update
 
-    Task UpdateAsync<TEntity, TResponse>(string id, TEntity entity);
+    Task UpdateOneAsync<TEntity>(FilterDefinition<TEntity> filter, UpdateDefinition<TEntity> updatedData, UpdateOptions options);
+    Task UpdateManyAsync<TEntity>(FilterDefinition<TEntity> filter, UpdateDefinition<TEntity> updatedDataList, UpdateOptions options);
+    
    
     #endregion
 
