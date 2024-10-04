@@ -63,9 +63,20 @@ public class StudentController : ControllerBase
 
 
     [HttpGet]
-    public async Task<ApiResponseModel> GetStudentDetails(string id)
+    public async Task<ApiResponseModel> GetStudentDetails([FromQuery] GetStudentDetailsQuery query )
     {
-        throw new NotImplementedException();
+        var response = await _queryDispatcher.DispatchAsync<GetStudentDetailsQuery, ApiResponseModel>(query);
+
+        return response;
+    }
+
+    
+    [HttpGet]
+    public async Task<ApiResponseModel> GetStudentDetailsWithProjection([FromQuery] GetStudentDetailsWithProjectionQuery query)
+    {
+        var response = await _queryDispatcher.DispatchAsync<GetStudentDetailsWithProjectionQuery, ApiResponseModel>(query);
+
+        return response;
     }
 }
 

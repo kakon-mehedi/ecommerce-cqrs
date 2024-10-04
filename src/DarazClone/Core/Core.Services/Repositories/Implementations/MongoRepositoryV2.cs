@@ -82,7 +82,7 @@ public class MongoRepositoryV2 : IRepositoryV2
     {
         ObjectId objectId = new ObjectId(id);
 
-        FilterDefinition<TEntity> filter = Builders<TEntity>.Filter.Eq("_id", objectId);
+        FilterDefinition<TEntity> filter = Builders<TEntity>.Filter.Eq("ItemId", objectId);
         var collection = GetCollection<TEntity>();
         return await collection.Find(filter).FirstOrDefaultAsync();
     }

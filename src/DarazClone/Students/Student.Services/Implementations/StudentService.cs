@@ -5,7 +5,7 @@ using DarazClone.Core.Services.Repositories;
 using DarazClone.Core.Services.Shared.Models;
 using DarazClone.Students.Commands;
 using DarazClone.Students.Services.Mappings;
-using MongoDB.Bson;
+
 using MongoDB.Driver;
 
 namespace DarazClone.Students.Services.Implementations;
@@ -43,16 +43,6 @@ public class StudentService : IStudentService
         return response;
     }
 
-    public Task DeleteMultipleStudentAsync(DeleteMultipleStudentsCommand command)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task DeleteStudentAsync(DeleteStudentCommand command)
-    {
-        throw new NotImplementedException();
-    }
-
     public async Task<ApiResponseModel> GetAllStudents()
     {
         var response = new ApiResponseModel();
@@ -82,9 +72,30 @@ public class StudentService : IStudentService
         return response;
     }
 
-    public Task<ApiResponseModel> GetStudentByIdAsync(string id)
+    public async Task<ApiResponseModel> GetStudentByIdAsync(string id)
     {
-        throw new NotImplementedException();
+        var response = new ApiResponseModel();
+        var data = await _repo.FindOneAsync<Student>(id);
+        response.SetSuccess(data);
+
+        return response;
+    }
+
+    public async Task<ApiResponseModel> GetStudentByIdAsyncWithProjection(string id)
+    {
+        var response = new ApiResponseModel();
+        FilterDefinition<Student> filter = Builders<Student>.Filter.Where(x => x.ItemId == id);
+        ProjectionDefinition<Student> projection = 
+        Builders<Student>.Projection
+        .Include(x => x.ItemId)
+        .Include(x => x.Name)
+        .Include(x => x.Age)
+        .Include(x => x.Department);
+        
+        var data = await _repo.FindOneAsyncWithProjection<Student>(filter, projection);
+        response.SetSuccess(data);
+
+        return response;
     }
 
     public Task<ApiResponseModel> UpdateMultipleStudentAsync(UpdateMultipleStudentsCommand command)
