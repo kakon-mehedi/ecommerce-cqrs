@@ -6,6 +6,7 @@ using DarazClone.Core.Services.Shared.Models;
 using DarazClone.Students.Commands;
 using DarazClone.Students.Services.Mappings;
 using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace DarazClone.Students.Services.Implementations;
 
@@ -34,7 +35,7 @@ public class StudentService : IStudentService
         var student = command.MapToStudentEntity();
         _commonValueInjectorService.Inject(student);
         _metadataInjectorService.Inject(student);
-        
+
         await _repo.InsertOneAsync(student);
 
         response.SetSuccess(student);
@@ -52,9 +53,33 @@ public class StudentService : IStudentService
         throw new NotImplementedException();
     }
 
-    public Task<ApiResponseModel> GetAllStudents()
+    public async Task<ApiResponseModel> GetAllStudents()
     {
-        throw new NotImplementedException();
+        var response = new ApiResponseModel();
+
+        var data = await _repo.FindAllAsync<Student>();
+
+        response.SetSuccess(data.ToList());
+
+        return response;
+    }
+
+    public async Task<ApiResponseModel> GetAllStudentsWithProjection()
+    {
+        var response = new ApiResponseModel();
+
+        ProjectionDefinition<Student> projection =
+        Builders<Student>.Projection
+        .Include(x => x.ItemId)
+        .Include(x => x.Name)
+        .Include(x => x.Age)
+        .Include(x => x.Department);
+
+        var data = await _repo.FindAllAsyncWithProjection(projection);
+
+        response.SetSuccess(data.ToList());
+
+        return response;
     }
 
     public Task<ApiResponseModel> GetStudentByIdAsync(string id)

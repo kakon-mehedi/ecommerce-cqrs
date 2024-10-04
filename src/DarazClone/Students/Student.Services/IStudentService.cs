@@ -13,6 +13,8 @@ public interface IStudentService
 
     Task<ApiResponseModel> GetAllStudents();
 
+    Task<ApiResponseModel> GetAllStudentsWithProjection();
+
     Task<ApiResponseModel> GetStudentByIdAsync (string id);
 
     Task<ApiResponseModel> UpdateStudentAsync (UpdateStudentCommand command);

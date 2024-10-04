@@ -1,6 +1,7 @@
 using DarazClone.Core.Services.Dispatchers;
 using DarazClone.Core.Services.Shared.Models;
 using DarazClone.Students.Commands;
+using DarazClone.Students.Queries;
 using DarazClone.Students.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,9 +23,10 @@ public class StudentController : ControllerBase
     [HttpPost]
     public async Task<ApiResponseModel> CreateStudent([FromBody] CreateStudentCommand command)
     {
-        var response =  await _commandDispatcher.DispatchAsync<CreateStudentCommand, ApiResponseModel>(command);
+        var response = await _commandDispatcher.DispatchAsync<CreateStudentCommand, ApiResponseModel>(command);
 
-        if (!response.IsSuccess) {
+        if (!response.IsSuccess)
+        {
             HttpContext.Response.StatusCode = response.HttpStatusCode;
         }
 
@@ -40,13 +42,23 @@ public class StudentController : ControllerBase
     [HttpGet]
     public async Task<ApiResponseModel> GetAllStudents()
     {
-        throw new NotImplementedException();
+        var response = await _queryDispatcher.DispatchAsync<GetAllStudentsQuery, ApiResponseModel>();
+
+        if (!response.IsSuccess)
+        {
+            HttpContext.Response.StatusCode = response.HttpStatusCode;
+        }
+
+        return response;
     }
 
     [HttpGet]
     public async Task<ApiResponseModel> GetAllStudentsWithProjection()
     {
-        throw new NotFiniteNumberException();
+
+        var response = await _queryDispatcher.DispatchAsync<GetAllStudentsWithProjectionsQuery, ApiResponseModel>();
+
+        return response;
     }
 
 
