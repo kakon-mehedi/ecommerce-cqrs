@@ -1,5 +1,6 @@
 using DarazClone.Core.Services;
 using DarazClone.Products.Services;
+using DarazClone.Students.Services;
 using Reports.Services;
 
 
@@ -21,6 +22,7 @@ public static class ApplicationServiceRegistration
         
         services.AddProductServices();
         services.AddReportServices();
+        services.AddStudentServices();
         return services;
     }
 }

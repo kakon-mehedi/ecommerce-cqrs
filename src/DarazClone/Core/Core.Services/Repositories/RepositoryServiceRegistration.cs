@@ -20,6 +20,7 @@ public static class RepositoryServiceRegistration
         //services.AddScoped(typeof(IRepository<>), typeof(MongoRepository<>)); // For generic repo purpose
         
         services.AddScoped(typeof(IRepository), typeof(MongoRepository));
+        services.AddScoped(typeof(IRepositoryV2), typeof(MongoRepositoryV2));
 
         return services;
     }

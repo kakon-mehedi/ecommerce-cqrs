@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Identity.Data;
+using MongoDB.Driver;
 
 namespace DarazClone.Core.Services.Repositories;
 
@@ -13,6 +14,8 @@ public interface IRepository
     Task<IEnumerable<TModel>> GetAllAsync<TModel>();
 
     Task<IEnumerable<TResponse>> GetAllAsync<TEntity, TResponse>(Expression<Func<TEntity, bool>> predicate);
+
+    Task<List<TEntity>> RunAggregationAsync<TEntity>(PipelineDefinition<TEntity, TEntity> pipeline);
 
     #endregion
 

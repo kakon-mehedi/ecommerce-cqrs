@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../Products/Product.CommnadHandlers/Products.CommandHandlers.csproj" />
+    <ProjectReference Include="../Students/Student.Services/Students.Services.csproj" />
     <ProjectReference Include="..\Core\Core.Entities\Core.Entities.csproj" />
     <ProjectReference Include="..\Core\Core.Services\Core.Services.csproj" />
     <ProjectReference Include="..\Core\Core.Shared\Core.Shared.csproj" />

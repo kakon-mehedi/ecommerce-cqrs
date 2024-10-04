@@ -31,7 +31,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ApiResponseModel> GetTodos()
+    public async Task<ApiResponseModel> GetProducts()
     {
         var res = new ApiResponseModel();
         return res;

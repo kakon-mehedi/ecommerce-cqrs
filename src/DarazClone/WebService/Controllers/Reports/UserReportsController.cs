@@ -6,7 +6,7 @@ using Reports.Services;
 
 namespace DarazClone.WebService.Controllers.Reports;
 
-[Route("api/[controller]")]
+[Route("api/[controller]/[action]")]
 [ApiController]
 public class UserReportsController : ControllerBase
 {
@@ -17,11 +17,25 @@ public class UserReportsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task< ApiResponseModel> GenerateUserReport()
+    public async Task<ApiResponseModel> GetListOfActiveUsers()
     {
         var response = new ApiResponseModel();
 
-        var res =  await _userReportService.GetUserReports();
+        var data = await _userReportService.GetListOfActiveUsers();
+
+        response.SetSuccess(data);
+
+        return response;
+    }
+
+    [HttpGet]
+    public async Task<ApiResponseModel> GetNumberOfActiveUsers()
+    {
+        var response = new ApiResponseModel();
+
+        var data = await _userReportService.GetNumberOfTotalActiveUsers();
+
+        response.SetSuccess(data);
 
         return response;
     }
