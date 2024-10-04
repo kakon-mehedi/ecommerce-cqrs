@@ -24,7 +24,10 @@ public interface IRepositoryV2
     #region  Query
 
     Task<TEntity> FindOneAsync<TEntity>(string id);
-    Task<TEntity> FindOneAsyncWithProjection<TEntity>(FilterDefinition<TEntity> filter, ProjectionDefinition<TEntity> projection);
+    // Task<TProjection> FindOneAsyncWithProjection<TEntity, TProjection>(FilterDefinition<TEntity> filter, ProjectionDefinition<TEntity, TProjection> projection);
+
+    Task<TProjectedValue> FindOneAsyncWithProjection<TEntity, TProjectedValue>(FilterDefinition<TEntity> filter, ProjectionDefinition<TEntity> projection);
+
 
     Task<IEnumerable<TEntity>> FindAllAsync<TEntity>();
     Task<IEnumerable<TEntity>> FindAllAsyncWithProjection<TEntity>(ProjectionDefinition<TEntity> projection);

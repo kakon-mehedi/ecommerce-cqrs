@@ -5,7 +5,7 @@ using DarazClone.Core.Services.Repositories;
 using DarazClone.Core.Services.Shared.Models;
 using DarazClone.Students.Commands;
 using DarazClone.Students.Services.Mappings;
-
+using DarazClone.Students.Services.ResponseModels;
 using MongoDB.Driver;
 
 namespace DarazClone.Students.Services.Implementations;
@@ -85,14 +85,15 @@ public class StudentService : IStudentService
     {
         var response = new ApiResponseModel();
         FilterDefinition<Student> filter = Builders<Student>.Filter.Where(x => x.ItemId == id);
-        ProjectionDefinition<Student> projection = 
+        ProjectionDefinition<Student> projection =
         Builders<Student>.Projection
         .Include(x => x.ItemId)
         .Include(x => x.Name)
         .Include(x => x.Age)
         .Include(x => x.Department);
-        
-        var data = await _repo.FindOneAsyncWithProjection<Student>(filter, projection);
+
+        var data = await _repo.FindOneAsyncWithProjection<Student, GetStudentDetailsWithProjectionResponseModel>(filter, projection);
+
         response.SetSuccess(data);
 
         return response;
@@ -117,4 +118,13 @@ public class StudentService : IStudentService
     {
         throw new NotImplementedException();
     }
+}
+
+
+public class StudentProjectionDTO
+{
+    public string ItemId { get; set; }
+    public string Name { get; set; }
+    public int Age { get; set; }
+    public string Department { get; set; }
 }

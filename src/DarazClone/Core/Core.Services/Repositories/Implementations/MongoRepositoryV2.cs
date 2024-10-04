@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using DarazClone.Core.Shared.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 
 namespace DarazClone.Core.Services.Repositories.Implementations;
@@ -55,7 +56,11 @@ public class MongoRepositoryV2 : IRepositoryV2
 
     }
 
-    public async Task<IEnumerable<TEntity>> FindAllAsyncPaginatedWithProjection<TEntity>(FilterDefinition<TEntity> filter, ProjectionDefinition<TEntity> projection, IPagination pagination)
+    public async Task<IEnumerable<TEntity>> FindAllAsyncPaginatedWithProjection<TEntity>(
+        FilterDefinition<TEntity> filter,
+        ProjectionDefinition<TEntity> projection,
+        IPagination pagination
+    )
     {
         var collection = GetCollection<TEntity>();
 
@@ -87,12 +92,24 @@ public class MongoRepositoryV2 : IRepositoryV2
         return await collection.Find(filter).FirstOrDefaultAsync();
     }
 
-    public Task<TEntity> FindOneAsyncWithProjection<TEntity>(FilterDefinition<TEntity> filter, ProjectionDefinition<TEntity> projection)
+    public async Task<TProjectedValue> FindOneAsyncWithProjection<TEntity, TProjectedValue>(
+        FilterDefinition<TEntity> filter,
+        ProjectionDefinition<TEntity> projection)
     {
         var collection = GetCollection<TEntity>();
+        var find = collection.Find(filter);
 
-        return collection.Find(filter).Project<TEntity>(projection).FirstOrDefaultAsync();
+        BsonDocument data = new BsonDocument();
+
+        data = await find
+        .Project(projection)
+        .FirstOrDefaultAsync();
+
+
+        TProjectedValue result = BsonSerializer.Deserialize<TProjectedValue>(data);
+        return result;
     }
+
 
     public IMongoCollection<TEntity> GetCollection<TEntity>()
     {
@@ -145,5 +162,76 @@ public class MongoRepositoryV2 : IRepositoryV2
         await collection.UpdateOneAsync(filterDefinition, updateDefinition);
     }
 
+    #region Reza bhai
+    public async Task<(List<TProjectedValue>, long)> GetProjectedItemsAsync<TEntity, TProjectedValue>(
+        int pageNo,
+        int pageSize,
+        FilterDefinition<TEntity> filter,
+        ProjectionDefinition<TEntity> projection,
+        SortDefinition<TEntity> sort = null
+    )
+    {
+        var collection = GetCollection<TEntity>();
+        var find = collection.Find(filter);
+        var countTask = find.CountDocumentsAsync();
 
+        List<BsonDocument> data = new List<BsonDocument>();
+
+        if (sort == null)
+        {
+            data = await find
+           .Project(projection)
+           .Skip(pageSize * pageNo)
+           .Limit(pageSize)
+           .ToListAsync();
+        }
+        else
+        {
+            data = await find
+           .Sort(sort)
+           .Project(projection)
+           .Skip(pageSize * pageNo)
+           .Limit(pageSize)
+           .ToListAsync();
+        }
+
+        var projectionData = data
+            .Select(d => BsonSerializer.Deserialize<TProjectedValue>(d))
+            .ToList();
+
+        return (projectionData, await countTask);
+    }
+
+    public async Task<(List<TProjectedValue>, long)> GetProjectedItemsAsync<TEntity, TProjectedValue>(
+        FilterDefinition<TEntity> filter,
+        ProjectionDefinition<TEntity> projection,
+        SortDefinition<TEntity> sort = null
+    )
+    {
+        var collection = GetCollection<TEntity>();
+        var find = collection.Find(filter);
+        var countTask = find.CountDocumentsAsync();
+        var data = new List<BsonDocument>();
+
+        if (sort == null)
+        {
+            data = await find
+           .Project(projection)
+           .ToListAsync();
+        }
+        else
+        {
+            data = await find
+           .Sort(sort)
+           .Project(projection)
+           .ToListAsync();
+        }
+        var projectionData = data
+            .Select(d => BsonSerializer.Deserialize<TProjectedValue>(d))
+            .ToList();
+
+        return (projectionData, await countTask);
+    }
+
+    #endregion
 }
