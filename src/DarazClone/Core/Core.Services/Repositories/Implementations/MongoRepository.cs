@@ -1,4 +1,6 @@
 using System.Linq.Expressions;
+using DarazClone.Core.Entities.Product;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 
@@ -11,8 +13,8 @@ public class MongoRepository : IRepository
     public MongoRepository(IMongoDatabase database)
     {
         _db = database;
-        
-        
+
+
     }
 
     public Task DeleteAsync(string id)
@@ -29,7 +31,6 @@ public class MongoRepository : IRepository
     {
         throw new NotImplementedException();
     }
-
     public async Task<IEnumerable<TEntity>> GetAllAsync<TEntity>()
     {
         var collection = GetCollection<TEntity>();
@@ -37,7 +38,7 @@ public class MongoRepository : IRepository
         var pageNumber = 1;
 
         var paginatedResult = collection
-        .Find(Builders<TEntity>.Filter.Empty) 
+        .Find(Builders<TEntity>.Filter.Empty)
         .Skip((pageNumber - 1) * pageSize)
         .Limit(pageSize)
         .ToList();
@@ -56,6 +57,19 @@ public class MongoRepository : IRepository
         await collection.InsertOneAsync(entity);
     }
 
+    public async Task<List<TEntity>> RunAggregationAsync<TEntity>(PipelineDefinition<TEntity, TEntity> pipeline)
+    {
+
+        var collection = GetCollection<TEntity>();
+        var allData = await collection.FindAsync(Builders<TEntity>.Filter.Empty);
+
+        var res = await collection.Aggregate(pipeline).ToListAsync();
+
+        return res;
+
+
+    }
+
     public Task UpdateAsync<TEntity, TResponse>(string id, TEntity entity)
     {
         throw new NotImplementedException();
@@ -65,10 +79,9 @@ public class MongoRepository : IRepository
     {
         // Extracting collection name from the given Type
         var collectionName = typeof(TEntity).Name + "s";
-        var collection =  _db.GetCollection<TEntity>(collectionName);
+        var collection = _db.GetCollection<TEntity>(collectionName);
 
         return collection;
     }
 
-   
 }
