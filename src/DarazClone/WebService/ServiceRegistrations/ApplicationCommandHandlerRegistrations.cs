@@ -3,6 +3,7 @@ using System.Reflection;
 using DarazClone.Core.Services.Dispatchers;
 using DarazClone.Products.CommandHandlers;
 using DarazClone.Products.QueryHandlers;
+using DarazClone.Students.CommandHandlers;
 
 
 namespace DarazClone.WebService.ServiceRegistrations;
@@ -15,6 +16,7 @@ public static class ApplicationCommandHandlerRegistrations
         Assembly[] assembliesToScan = [
             typeof(AddProductCommandHandler).Assembly, // As we are selecting the assembly here. so This will add Todo.CommandHandler projects all command handlers.
             typeof(GetAllProductsQueryHandler).Assembly,
+            typeof(CreateStudentCommandHandler).Assembly,
         ];
        
 

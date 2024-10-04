@@ -1,25 +1,27 @@
 using System;
 using DarazClone.Core.Entities.Student;
+using DarazClone.Core.Services.Shared.Models;
+using DarazClone.Students.Commands;
 
 namespace DarazClone.Students.Services;
 
 public interface IStudentService
 {
-    Task<Student> CreateStudentAsync (Student student);
+    Task<ApiResponseModel> CreateStudentAsync (CreateStudentCommand command);
 
-    Task<List<Student>> CreateMultipleStudentsAsync (List<Student> students);
+    Task<ApiResponseModel> CreateMultipleStudentsAsync (CreateMultipleStudentsCommand command);
 
-    Task<List<Student>> GetAllStudents();
+    Task<ApiResponseModel> GetAllStudents();
 
-    Task<Student> GetStudentByIdAsync (string id);
+    Task<ApiResponseModel> GetStudentByIdAsync (string id);
 
-    Task<Student> UpdateStudentAsync (string id, Student student);
+    Task<ApiResponseModel> UpdateStudentAsync (UpdateStudentCommand command);
 
-    Task<List<Student>> UpdateMultipleStudentAsync(List<string> ids, List<Student> students);
+    Task<ApiResponseModel> UpdateMultipleStudentAsync(UpdateMultipleStudentsCommand command);
 
-    Task DeleteStudentAsync (string id);
+    Task<ApiResponseModel> DeleteStudentAsync (DeleteStudentCommand command);
 
-    Task DeleteMultipleStudentAsync(List<string> ids);
+    Task<ApiResponseModel> DeleteMultipleStudentAsync(DeleteMultipleStudentsCommand command);
 
 
 }

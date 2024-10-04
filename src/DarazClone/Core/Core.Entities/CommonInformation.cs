@@ -10,7 +10,7 @@ public abstract class CommonInformation: CommonSecurityMetadata
     public virtual DateTime CreateDate { get; set; } = DateTime.Now;
 
     [BsonId] // Mapping _id which will created by mongodb by default to this ItemId property
-    public string ItemId { get; set; } = string.Empty;
+    public string ItemId { get; set; }
 
     public virtual string Language { get; set; } = string.Empty;
 

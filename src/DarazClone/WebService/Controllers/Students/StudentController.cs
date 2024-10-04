@@ -1,6 +1,7 @@
+using DarazClone.Core.Services.Dispatchers;
 using DarazClone.Core.Services.Shared.Models;
+using DarazClone.Students.Commands;
 using DarazClone.Students.Services;
-using DarazClone.Students.Services.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,67 +11,49 @@ namespace DarazClone.WebService.Controllers.Students;
 [ApiController]
 public class StudentController : ControllerBase
 {
-    private IStudentService _studentService;
-    public StudentController(IStudentService studentService)
+    private readonly ICommandDispatcher _commandDispatcher;
+    private readonly IQueryDispatcher _queryDispatcher;
+    public StudentController(ICommandDispatcher commandDispatcher, IQueryDispatcher queryDispatcher)
     {
-        _studentService = studentService;
+        _commandDispatcher = commandDispatcher;
+        _queryDispatcher = queryDispatcher;
     }
 
     [HttpPost]
-    public async Task<ApiResponseModel> CreateStudent([FromBody] Student student)
+    public async Task<ApiResponseModel> CreateStudent([FromBody] CreateStudentCommand command)
     {
-        var response = new ApiResponseModel();
-        var data = await _studentService.CreateStudentAsync(student);
-        response.SetData(data);
+        var response =  await _commandDispatcher.DispatchAsync<CreateStudentCommand, ApiResponseModel>(command);
+
+        if (!response.IsSuccess) {
+            HttpContext.Response.StatusCode = response.HttpStatusCode;
+        }
 
         return response;
     }
 
     [HttpPost]
-    public async Task<ApiResponseModel> CreateMultipleStudent([FromBody] List<Student> students)
+    public async Task<ApiResponseModel> CreateMultipleStudent([FromBody] CreateMultipleStudentsCommand command)
     {
-        var response = new ApiResponseModel();
-        var data = await _studentService.CreateMultipleStudentsAsync(students);
-        response.SetData(data);
-
-        return response;
+        return await _commandDispatcher.DispatchAsync<CreateMultipleStudentsCommand, ApiResponseModel>(command);
     }
 
     [HttpGet]
     public async Task<ApiResponseModel> GetAllStudents()
     {
-        var response = new ApiResponseModel();
-
-        var data = await _studentService.GetAllStudents();
-
-        response.SetData(data);
-
-        return response;
+        throw new NotImplementedException();
     }
 
     [HttpGet]
     public async Task<ApiResponseModel> GetAllStudentsWithProjection()
     {
-        var response = new ApiResponseModel();
-
-        var data = await _studentService.GetAllStudents();
-
-        response.SetData(data);
-
-        return response;
+        throw new NotFiniteNumberException();
     }
 
 
     [HttpGet]
     public async Task<ApiResponseModel> GetStudentDetails(string id)
     {
-        var response = new ApiResponseModel();
-
-        var data = await _studentService.GetStudentByIdAsync(id);
-
-        response.SetData(data);
-
-        return response;
+        throw new NotImplementedException();
     }
 }
 

@@ -8,13 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Mappings/" />
+    <Folder Include="Models/" />
     <Folder Include="ResponseModels/" />
-    <Folder Include="Validators/" />
+    <Folder Include="Validators/QueryValidators/" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Core.Services\Core.Services.csproj" />
+    <ProjectReference Include="..\Student.Commands\Students.Commands.csproj" />
+    <ProjectReference Include="..\Student.Queries\Students.Queries.csproj" />
+    <ProjectReference Include="..\..\Core\Core.Entities\Core.Entities.csproj" />
   </ItemGroup>
 
 </Project>
