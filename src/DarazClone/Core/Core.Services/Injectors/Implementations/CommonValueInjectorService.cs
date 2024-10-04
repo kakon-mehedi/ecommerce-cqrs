@@ -2,6 +2,7 @@ using System;
 using DarazClone.Core.Entities;
 using DarazClone.Core.Services.Auth;
 using Microsoft.AspNetCore.Authentication;
+using MongoDB.Bson;
 
 namespace DarazClone.Core.Services.Injectors.Implementations;
 
@@ -17,6 +18,10 @@ public class CommonValueInjectorService: ICommonValueInjectorService
     public TEntity Inject<TEntity>(TEntity model) where TEntity : EntityBase
     {
         var userInfo = _authService.GetCurrentUserData();
+
+        if (string.IsNullOrWhiteSpace(model.ItemId)) {
+            model.ItemId = ObjectId.GenerateNewId().ToString();
+        }
 
         model.CreatedBy = userInfo.UserDetailedInfo;
 

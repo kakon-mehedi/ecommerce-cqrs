@@ -28,6 +28,9 @@
     <ProjectReference Include="..\Products\Products.Queries\Products.Queries.csproj" />
     <ProjectReference Include="..\Products\Products.QueryHandlers\Products.QueryHandlers.csproj" />
     <ProjectReference Include="..\Reports\Reports.Services\Reports.Services.csproj" />
+    <ProjectReference Include="..\Students\Student.CommandHandlers\Students.CommandHandlers.csproj" />
+    <ProjectReference Include="..\Students\Student.QueryHandlers\Students.QueryHandlers.csproj" />
+    <ProjectReference Include="..\Students\Student.Queries\Students.Queries.csproj" />
   </ItemGroup>
 
 </Project>

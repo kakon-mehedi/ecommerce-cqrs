@@ -1,103 +1,130 @@
 using System;
 using DarazClone.Core.Entities.Student;
+using DarazClone.Core.Services.Injectors;
 using DarazClone.Core.Services.Repositories;
-using MongoDB.Bson;
+using DarazClone.Core.Services.Shared.Models;
+using DarazClone.Students.Commands;
+using DarazClone.Students.Services.Mappings;
+using DarazClone.Students.Services.ResponseModels;
+using MongoDB.Driver;
 
 namespace DarazClone.Students.Services.Implementations;
 
 public class StudentService : IStudentService
 {
     private IRepositoryV2 _repo;
-    public StudentService(IRepositoryV2 repo)
+    private ICommonValueInjectorService _commonValueInjectorService;
+
+    private IMetadataInjectorService _metadataInjectorService;
+    public StudentService(IRepositoryV2 repo, ICommonValueInjectorService commonValueInjector, IMetadataInjectorService metadataInjectorService)
     {
         _repo = repo;
-    }
-
-    public async Task<List<Student>> CreateMultipleStudentsAsync(List<Student> students)
-    {
-        foreach (var student in students)
-        {
-            if (string.IsNullOrWhiteSpace(student.ItemId))
-            {
-                student.ItemId = ObjectId.GenerateNewId().ToString();
-            }
-        }
-
-        try
-        {
-            await _repo.InsertMultiAsync(students);
-            return students;
-        }
-        catch (Exception ex)
-        {
-
-            throw;
-        }
+        _commonValueInjectorService = commonValueInjector;
+        _metadataInjectorService = metadataInjectorService;
 
     }
 
-    public async Task<Student> CreateStudentAsync(Student student)
-    {
-
-        if (string.IsNullOrWhiteSpace(student.ItemId))
-        {
-            student.ItemId = ObjectId.GenerateNewId().ToString();
-        }
-
-        try
-        {
-            await _repo.InsertOneAsync(student);
-            return student;
-        }
-        catch (Exception ex)
-        {
-
-            throw;
-        }
-    }
-
-    public async Task DeleteMultipleStudentAsync(List<string> ids)
-    {
-        await _repo.DeleteMultiAsync<Student>(ids);
-    }
-
-    public Task DeleteStudentAsync(string id)
+    public Task<ApiResponseModel> CreateMultipleStudentsAsync(CreateMultipleStudentsCommand command)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<List<Student>> GetAllStudents()
+    public async Task<ApiResponseModel> CreateStudentAsync(CreateStudentCommand command)
     {
-        var res = await _repo.FindAllAsync<Student>();
-        return res.ToList();
+        var response = new ApiResponseModel();
+        var student = command.MapToStudentEntity();
+        _commonValueInjectorService.Inject(student);
+        _metadataInjectorService.Inject(student);
+
+        await _repo.InsertOneAsync(student);
+
+        response.SetSuccess(student);
+
+        return response;
     }
 
-    public async Task<Student> GetStudentByIdAsync(string id)
+    public async Task<ApiResponseModel> GetAllStudents()
     {
-        return await _repo.FindOneAsync<Student>(id);
+        var response = new ApiResponseModel();
+
+        var data = await _repo.FindAllAsync<Student>();
+
+        response.SetSuccess(data.ToList());
+
+        return response;
     }
 
-    public async Task<List<Student>> UpdateMultipleStudentAsync(List<string> ids, List<Student> students)
+    public async Task<ApiResponseModel> GetAllStudentsWithProjection()
     {
-        try
-        {
-            await _repo.UpdateMultiAsync<Student>(ids, students);
-        }
-        catch (System.Exception)
-        {
+        var response = new ApiResponseModel();
 
-            throw;
-        }
+        ProjectionDefinition<Student> projection =
+        Builders<Student>.Projection
+        .Include(x => x.ItemId)
+        .Include(x => x.Name)
+        .Include(x => x.Age)
+        .Include(x => x.Department);
 
-        return students;
+        var data = await _repo.FindAllAsyncWithProjection<Student, GetAllStudentWithProjectionResponseModel>(projection);
 
+        response.SetSuccess(data.ToList());
 
+        return response;
     }
 
-    public async Task<Student> UpdateStudentAsync(string id, Student student)
+    public async Task<ApiResponseModel> GetStudentByIdAsync(string id)
     {
-        await _repo.UpdateOneAsync(id, student);
+        var response = new ApiResponseModel();
+        var data = await _repo.FindOneAsync<Student>(id);
+        response.SetSuccess(data);
 
-        return student;
+        return response;
     }
+
+    public async Task<ApiResponseModel> GetStudentByIdAsyncWithProjection(string id)
+    {
+        var response = new ApiResponseModel();
+        FilterDefinition<Student> filter = Builders<Student>.Filter.Where(x => x.ItemId == id);
+        ProjectionDefinition<Student> projection =
+        Builders<Student>.Projection
+        .Include(x => x.ItemId)
+        .Include(x => x.Name)
+        .Include(x => x.Age)
+        .Include(x => x.Department);
+
+        var data = await _repo.FindOneAsyncWithProjection<Student, GetStudentDetailsWithProjectionResponseModel>(filter, projection);
+
+        response.SetSuccess(data);
+
+        return response;
+    }
+
+    public Task<ApiResponseModel> UpdateMultipleStudentAsync(UpdateMultipleStudentsCommand command)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ApiResponseModel> UpdateStudentAsync(UpdateStudentCommand command)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<ApiResponseModel> IStudentService.DeleteMultipleStudentAsync(DeleteMultipleStudentsCommand command)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<ApiResponseModel> IStudentService.DeleteStudentAsync(DeleteStudentCommand command)
+    {
+        throw new NotImplementedException();
+    }
+}
+
+
+public class StudentProjectionDTO
+{
+    public string ItemId { get; set; }
+    public string Name { get; set; }
+    public int Age { get; set; }
+    public string Department { get; set; }
 }

@@ -15,6 +15,7 @@ public static class ApplicationServiceRegistration
         services.AddCoreServices(configuration);
         services.AddApplicationServices();
         services.AddApplicationCommandHandlers();
+        services.AddApplicationQueryHandlers();
         return services;
     }
 

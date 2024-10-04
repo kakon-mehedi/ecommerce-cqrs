@@ -1,25 +1,31 @@
 using System;
 using DarazClone.Core.Entities.Student;
+using DarazClone.Core.Services.Shared.Models;
+using DarazClone.Students.Commands;
+using MongoDB.Driver;
 
 namespace DarazClone.Students.Services;
 
 public interface IStudentService
 {
-    Task<Student> CreateStudentAsync (Student student);
+    Task<ApiResponseModel> CreateStudentAsync (CreateStudentCommand command);
 
-    Task<List<Student>> CreateMultipleStudentsAsync (List<Student> students);
+    Task<ApiResponseModel> CreateMultipleStudentsAsync (CreateMultipleStudentsCommand command);
 
-    Task<List<Student>> GetAllStudents();
+    Task<ApiResponseModel> GetAllStudents();
 
-    Task<Student> GetStudentByIdAsync (string id);
+    Task<ApiResponseModel> GetAllStudentsWithProjection();
 
-    Task<Student> UpdateStudentAsync (string id, Student student);
+    Task<ApiResponseModel> GetStudentByIdAsync (string id);
+    Task<ApiResponseModel> GetStudentByIdAsyncWithProjection (string id);
 
-    Task<List<Student>> UpdateMultipleStudentAsync(List<string> ids, List<Student> students);
+    Task<ApiResponseModel> UpdateStudentAsync (UpdateStudentCommand command);
 
-    Task DeleteStudentAsync (string id);
+    Task<ApiResponseModel> UpdateMultipleStudentAsync(UpdateMultipleStudentsCommand command);
 
-    Task DeleteMultipleStudentAsync(List<string> ids);
+    Task<ApiResponseModel> DeleteStudentAsync (DeleteStudentCommand command);
+
+    Task<ApiResponseModel> DeleteMultipleStudentAsync(DeleteMultipleStudentsCommand command);
 
 
 }

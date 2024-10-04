@@ -1,33 +1,28 @@
 using System;
 using System.Reflection;
 using DarazClone.Core.Services.Dispatchers;
-using DarazClone.Products.CommandHandlers;
-using DarazClone.Products.QueryHandlers;
-using DarazClone.Students.CommandHandlers;
-
+using DarazClone.Students.QueryHandlers;
 
 namespace DarazClone.WebService.ServiceRegistrations;
 
-public static class ApplicationCommandHandlerRegistrations
+public static class ApplicationQueryHandlersRegistrations
 {
-    public static IServiceCollection AddApplicationCommandHandlers(this IServiceCollection services)
+    public static IServiceCollection AddApplicationQueryHandlers(this IServiceCollection services)
     {
-        // Creating new array of Assemblies
-        Assembly[] assembliesToScan = [
-            typeof(AddProductCommandHandler).Assembly, // As we are selecting the assembly here. so This will add Todo.CommandHandler projects all command handlers.
-            typeof(GetAllProductsQueryHandler).Assembly,
-            typeof(CreateStudentCommandHandler).Assembly,
+        Assembly[] assemblies = [
+           typeof(GetAllStudentsQueryHandler).Assembly, // As we are selecting the assembly here. so This will add Todo.CommandHandler projects all command handlers.
+            
         ];
-       
 
-        var handlerTypes = assembliesToScan
+
+        var handlerTypes = assemblies
             .SelectMany(assembly => assembly.GetTypes())
             .Where(t =>
                 t.GetInterfaces()
                     .Any(i =>
                         i.IsGenericType
                         && (
-                            i.GetGenericTypeDefinition() == typeof(ICommandHandler<,>)
+                            i.GetGenericTypeDefinition() == typeof(IQueryHandler<,>)
                             || i.GetGenericTypeDefinition() == typeof(IQueryHandler<,>)
                         )
                     )
