@@ -30,7 +30,7 @@ public interface IRepositoryV2
 
 
     Task<IEnumerable<TEntity>> FindAllAsync<TEntity>();
-    Task<IEnumerable<TEntity>> FindAllAsyncWithProjection<TEntity>(ProjectionDefinition<TEntity> projection);
+    Task<IEnumerable<TProjectedValue>> FindAllAsyncWithProjection<TEntity, TProjectedValue>(ProjectionDefinition<TEntity> projection);
 
     Task<IEnumerable<TEntity>> FindAllAsyncPaginated<TEntity>(FilterDefinition<TEntity> filter, IPagination pagination);
     Task<IEnumerable<TEntity>> FindAllAsyncPaginatedWithProjection<TEntity>(FilterDefinition<TEntity> filter, ProjectionDefinition<TEntity> projection, IPagination pagination);

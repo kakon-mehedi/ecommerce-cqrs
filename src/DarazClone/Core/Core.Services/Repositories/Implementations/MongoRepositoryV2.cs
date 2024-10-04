@@ -48,12 +48,12 @@ public class MongoRepositoryV2 : IRepositoryV2
         var pageNumber = 1;
         var pageSize = 10;
 
-        return await collection.Find(filter)
-                                 .Skip((pageNumber - 1) * pageSize)
-                                 .Limit(pageSize)
-                                 .ToListAsync();
+        var find = collection.Find(filter);
 
-
+        return await find
+        .Skip((pageNumber - 1) * pageSize)
+        .Limit(pageSize)
+        .ToListAsync();
     }
 
     public async Task<IEnumerable<TEntity>> FindAllAsyncPaginatedWithProjection<TEntity>(
@@ -74,13 +74,26 @@ public class MongoRepositoryV2 : IRepositoryV2
         return result;
     }
 
-    public async Task<IEnumerable<TEntity>> FindAllAsyncWithProjection<TEntity>(ProjectionDefinition<TEntity> projection)
+    public async Task<IEnumerable<TProjectedValue>> FindAllAsyncWithProjection<TEntity, TProjectedValue>(
+        ProjectionDefinition<TEntity> projection
+    )
     {
         var collection = GetCollection<TEntity>();
         FilterDefinition<TEntity> filter = Builders<TEntity>.Filter.Empty;
 
-        return await collection.Find(filter).Project<TEntity>(projection).ToListAsync();
+        var find = collection.Find(filter);
 
+        List<BsonDocument> data = new List<BsonDocument>();
+
+        data = await find
+        .Project(projection)
+        .ToListAsync();
+
+        var result = data
+            .Select(x => BsonSerializer.Deserialize<TProjectedValue>(x))
+            .ToList();
+
+        return result;
     }
 
     public async Task<TEntity> FindOneAsync<TEntity>(string id)

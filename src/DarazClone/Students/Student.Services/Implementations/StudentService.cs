@@ -65,7 +65,7 @@ public class StudentService : IStudentService
         .Include(x => x.Age)
         .Include(x => x.Department);
 
-        var data = await _repo.FindAllAsyncWithProjection(projection);
+        var data = await _repo.FindAllAsyncWithProjection<Student, GetAllStudentWithProjectionResponseModel>(projection);
 
         response.SetSuccess(data.ToList());
 
