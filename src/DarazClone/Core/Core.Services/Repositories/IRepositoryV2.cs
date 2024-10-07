@@ -23,6 +23,8 @@ public interface IRepositoryV2
 
     #region  Query
 
+    IMongoCollection<TEntity> GetCollection<TEntity>();
+
     Task<TEntity> FindOneAsync<TEntity>(string id);
     // Task<TProjection> FindOneAsyncWithProjection<TEntity, TProjection>(FilterDefinition<TEntity> filter, ProjectionDefinition<TEntity, TProjection> projection);
 
