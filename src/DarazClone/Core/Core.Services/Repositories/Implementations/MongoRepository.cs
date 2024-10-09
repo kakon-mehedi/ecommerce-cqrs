@@ -61,7 +61,6 @@ public class MongoRepository : IRepository
     {
 
         var collection = GetCollection<TEntity>();
-        var allData = await collection.FindAsync(Builders<TEntity>.Filter.Empty);
 
         var res = await collection.Aggregate(pipeline).ToListAsync();
 

@@ -6,6 +6,7 @@ namespace Reports.Services;
 public interface IUserReportService
 {
     Task<ApiResponseModel> GetListOfActiveUsers(); 
-
-    Task<ApiResponseModel> GetNumberOfTotalActiveUsers();
+    Task<ApiResponseModel> GetUsersGroupByGenderWithProjection();
+    Task<ApiResponseModel> GetTotalActiveFemaleUsers();
+    Task<ApiResponseModel> GetTotalActiveUsersCount();
 }

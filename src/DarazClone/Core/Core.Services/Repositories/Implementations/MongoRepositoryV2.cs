@@ -246,5 +246,17 @@ public class MongoRepositoryV2 : IRepositoryV2
         return (projectionData, await countTask);
     }
 
+    public async Task<IEnumerable<TProjectionModel>> RungAggregationPipelinesAsync<TEntity, TProjectionModel>(BsonArray pipelines)
+    {
+        var collection = GetCollection<TEntity>();
+
+        List<BsonDocument> pipelineList = pipelines.Select(pipeline => pipeline.AsBsonDocument).ToList();
+        List<BsonDocument> bsonItems = await collection.Aggregate<BsonDocument>(pipelineList).ToListAsync();
+
+        List<TProjectionModel> items = bsonItems.Select(bsonItem => BsonSerializer.Deserialize<TProjectionModel>(bsonItem)).ToList();
+
+        return items;
+    }
+
     #endregion
 }

@@ -19,25 +19,28 @@ public class UserReportsController : ControllerBase
     [HttpGet]
     public async Task<ApiResponseModel> GetListOfActiveUsers()
     {
-        var response = new ApiResponseModel();
-
-        var data = await _userReportService.GetListOfActiveUsers();
-
-        response.SetSuccess(data);
-
-        return response;
+        return await _userReportService.GetListOfActiveUsers();
     }
 
     [HttpGet]
-    public async Task<ApiResponseModel> GetNumberOfActiveUsers()
+    public async Task<ApiResponseModel> GetUsersGroupByGenderWithProjections()
     {
-        var response = new ApiResponseModel();
-
-        var data = await _userReportService.GetNumberOfTotalActiveUsers();
-
-        response.SetSuccess(data);
-
-        return response;
+        return await _userReportService.GetUsersGroupByGenderWithProjection();
     }
+
+    [HttpGet]
+    public async Task<ApiResponseModel> GetTotalActiveFemaleUsers()
+    {
+        return await _userReportService.GetTotalActiveFemaleUsers();
+    }
+
+    [HttpGet]
+    public async Task<ApiResponseModel> GetTotalActiveUsersCount()
+    {
+
+        return await _userReportService.GetTotalActiveUsersCount();
+
+    }
+
 }
 
