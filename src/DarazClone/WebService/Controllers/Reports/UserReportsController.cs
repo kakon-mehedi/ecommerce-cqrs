@@ -39,5 +39,18 @@ public class UserReportsController : ControllerBase
 
         return response;
     }
+
+    [HttpGet]
+    public async Task<ApiResponseModel> GetUsersGroupByGenderWithProjections()
+    {
+        var response = new ApiResponseModel();
+
+        var data = await _userReportService.GetUsersGroupByGenderWithProjection();
+
+        response.SetSuccess(data);
+
+        return response;
+    }
+
 }
 

@@ -1,5 +1,6 @@
 using System;
 using DarazClone.Core.Shared.Interfaces;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace DarazClone.Core.Services.Repositories;
@@ -36,6 +37,10 @@ public interface IRepositoryV2
 
     Task<IEnumerable<TEntity>> FindAllAsyncPaginated<TEntity>(FilterDefinition<TEntity> filter, IPagination pagination);
     Task<IEnumerable<TEntity>> FindAllAsyncPaginatedWithProjection<TEntity>(FilterDefinition<TEntity> filter, ProjectionDefinition<TEntity> projection, IPagination pagination);
+
+    // Aggregation 
+
+    Task<IEnumerable<TProjectionModel>> RungAggregationPipelinesAsync<TEntity, TProjectionModel>(BsonArray pipelines);
 
     #endregion
 

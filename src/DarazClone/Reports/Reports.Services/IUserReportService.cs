@@ -8,4 +8,6 @@ public interface IUserReportService
     Task<ApiResponseModel> GetListOfActiveUsers(); 
 
     Task<ApiResponseModel> GetNumberOfTotalActiveUsers();
+
+    Task<ApiResponseModel> GetUsersGroupByGenderWithProjection();
 }

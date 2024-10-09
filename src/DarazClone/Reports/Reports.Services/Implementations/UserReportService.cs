@@ -4,18 +4,21 @@ using DarazClone.Core.Services.Repositories;
 using DarazClone.Core.Services.Shared.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Reports.Services.Models;
 
 namespace Reports.Services.Implementations;
 
 public class UserReportService : IUserReportService
 {
     private readonly IRepository _repo;
-    public UserReportService(IRepository repo)
+    private readonly IRepositoryV2 _repoV2;
+    public UserReportService(IRepository repo, IRepositoryV2 repoV2)
     {
         _repo = repo;
+        _repoV2 = repoV2;
     }
 
-    public async Task<ApiResponseModel> GetListOfActiveUsers ()
+    public async Task<ApiResponseModel> GetListOfActiveUsers()
     {
         var response = new ApiResponseModel();
 
@@ -32,12 +35,12 @@ public class UserReportService : IUserReportService
 
     }
 
-    public async Task<ApiResponseModel> GetNumberOfTotalActiveUsers ()
+    public async Task<ApiResponseModel> GetNumberOfTotalActiveUsers()
     {
         var response = new ApiResponseModel();
 
         var matchFilter = Builders<User>.Filter.Where(f => f.isActive == true);
-        
+
 
         var pipeline = new EmptyPipelineDefinition<User>();
 
@@ -53,36 +56,50 @@ public class UserReportService : IUserReportService
 
     }
 
-}
+    public async Task<ApiResponseModel> GetUsersGroupByGenderWithProjection()
+    {
+        var response = new ApiResponseModel();
 
+        BsonArray pipelines = MakeUserGroupByGenderAggregationPipelines();
 
-public class User
-{
-    public ObjectId id { get; set; } // Assuming the Id is a string type based on your input
-    public int index { get; set; }
-    public string name { get; set; }
-    public bool isActive { get; set; }
-    public DateTime registered { get; set; }
-    public int age { get; set; }
-    public string gender { get; set; }
-    public string eyeColor { get; set; }
-    public string favoriteFruit { get; set; }
+        var data = await _repoV2.RungAggregationPipelinesAsync<User, UserGroupByGenderProjectionModel>(pipelines);
 
-    // Nested Company class
-    public Company company { get; set; }
-    public List<string> tags { get; set; }
-}
+        response.SetData(data);
 
-public class Company
-{
-    public string title { get; set; }
-    public string email { get; set; }
-    public string phone { get; set; }
-    public Location location { get; set; }
-}
+        return response;
+    }
 
-public class Location
-{
-    public string country { get; set; }
-    public string address { get; set; }
+    BsonArray MakeUserGroupByGenderAggregationPipelines()
+    {
+        var pageSize = 10;
+        var pageNumber = 0;
+
+        var pipelines = new BsonArray
+        {
+            new BsonDocument("$group", 
+            new BsonDocument
+                {
+                    { "_id", "$gender" }, 
+                    { "DataKakon", 
+            new BsonDocument("$push", 
+            new BsonDocument
+                        {
+                            { "Name", "$name" }, 
+                            { "Age", "$age" }, 
+                            { "Comapany", "$company" }
+                        }) }
+                }),
+            new BsonDocument("$project", 
+            new BsonDocument("DataMehedi", 
+            new BsonDocument("$slice", 
+            new BsonArray
+                        {
+                            "$DataKakon",
+                            pageSize * pageNumber,
+                            pageSize
+                        })))
+        };
+
+        return pipelines;
+    }
 }
